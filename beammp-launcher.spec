@@ -1,11 +1,10 @@
 Name:           beammp-launcher
 Version:        2.8.0
-Release:        2%{?dist}
+Release:        4%{?dist}
 Summary:        Multiplayer Launcher/Client for BeamMP (BeamNG.drive)
 
 License:        AGPL-3.0-only
 URL:            https://github.com/BeamMP/BeamMP-Launcher
-
 Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires:  cmake
@@ -49,30 +48,25 @@ cmake . -B bin \
 cmake --build bin %{?_smp_mflags}
 
 %install
-mkdir -p %{buildroot}%{_libexecdir}
-install -m 755 bin/BeamMP-Launcher %{buildroot}%{_libexecdir}/BeamMP-Launcher-bin
+install -D -p -m 0755 bin/BeamMP-Launcher %{buildroot}%{_libexecdir}/%{name}/BeamMP-Launcher
 
 mkdir -p %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/beammp-launcher << 'EOF'
+#!/bin/bash
 
-LAUNCHER_DIR="$HOME/beammp-launcher"
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+BEAMMP_DIR="$XDG_DATA_HOME/BeamMP-Launcher"
 
-mkdir -p "$LAUNCHER_DIR"
+mkdir -p "$BEAMMP_DIR"
+cd "$BEAMMP_DIR" || exit 1
 
-if [ ! -f "$LAUNCHER_DIR/BeamMP-Launcher" ] || [ /usr/libexec/BeamMP-Launcher-bin -nt "$LAUNCHER_DIR/BeamMP-Launcher" ]; then
-    echo "[BeamMP Wrapper] Preparing files..."
-    cp /usr/libexec/BeamMP-Launcher-bin "$LAUNCHER_DIR/BeamMP-Launcher"
-    chmod +x "$LAUNCHER_DIR/BeamMP-Launcher"
-fi
-
-cd "$LAUNCHER_DIR" || exit 1
-exec ./BeamMP-Launcher "$@"
+exec %{_libexecdir}/beammp-launcher/BeamMP-Launcher "$@"
 EOF
 
-chmod 755 %{buildroot}%{_bindir}/beammp-launcher
+chmod 0755 %{buildroot}%{_bindir}/beammp-launcher
 
-mkdir -p "%{buildroot}%{_datadir}/applications/"
-cat > "%{buildroot}%{_datadir}/applications/com.beammp.launcher.desktop" << 'EOF'
+mkdir -p %{buildroot}%{_datadir}/applications/
+cat > %{buildroot}%{_datadir}/applications/com.beammp.launcher.desktop << 'EOF'
 [Desktop Entry]
 Name=BeamMP
 Comment=Multiplayer mod for BeamNG.drive
@@ -83,11 +77,12 @@ Categories=Game;
 EOF
 
 %files
-%{_libexecdir}/BeamMP-Launcher-bin
-%{_bindir}/beammp-launcher
+%dir %{_libexecdir}/%{name}
+%attr(0755, root, root) %{_libexecdir}/%{name}/BeamMP-Launcher
+%attr(0755, root, root) %{_bindir}/beammp-launcher
 %{_datadir}/applications/com.beammp.launcher.desktop
 %license LICENSE
 %doc README.md
 
 %changelog
-* Thu Jul 16 2026 coffeeicus <coffeelover@coffeelover.uk> - 2.8.0-2
+* Thu Jul 16 2026 coffeeicus <coffeelover@coffeelover.uk> - 2.8.0-4
