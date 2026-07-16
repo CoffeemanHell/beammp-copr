@@ -1,6 +1,8 @@
+%global _binary_payload w22T0.zstdio
+
 Name:           beammp-launcher
 Version:        2.8.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Multiplayer Launcher/Client for BeamMP (BeamNG.drive)
 
 License:        AGPL-3.0-only
@@ -41,9 +43,16 @@ cd ..
 export VCPKG_ROOT="$(pwd)/vcpkg"
 export PATH=$VCPKG_ROOT:$PATH
 
+export CFLAGS="-O3 -march=x86-64-v3 -pipe -fexceptions -fstack-protector-strong"
+export CXXFLAGS="-O3 -march=x86-64-v3 -pipe -fexceptions -fstack-protector-strong"
+
+export VCPKG_KEEP_ENV_VARS="CFLAGS;CXXFLAGS"
+
 cmake . -B bin \
     -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake \
-    -DVCPKG_TARGET_TRIPLET=x64-linux
+    -DVCPKG_TARGET_TRIPLET=x64-linux \
+    -DCMAKE_C_FLAGS="$CFLAGS" \
+    -DCMAKE_CXX_FLAGS="$CXXFLAGS"
 
 cmake --build bin %{?_smp_mflags}
 
@@ -53,7 +62,6 @@ install -D -p -m 0755 bin/BeamMP-Launcher %{buildroot}%{_libexecdir}/%{name}/Bea
 mkdir -p %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/beammp-launcher << 'EOF'
 #!/bin/bash
-
 XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 BEAMMP_DIR="$XDG_DATA_HOME/BeamMP-Launcher"
 
@@ -71,7 +79,7 @@ cat > %{buildroot}%{_datadir}/applications/com.beammp.launcher.desktop << 'EOF'
 Name=BeamMP
 Comment=Multiplayer mod for BeamNG.drive
 Exec=beammp-launcher
-Terminal=true
+Terminal=false
 Type=Application
 Categories=Game;
 EOF
@@ -85,4 +93,4 @@ EOF
 %doc README.md
 
 %changelog
-* Thu Jul 16 2026 coffeeicus <coffeelover@coffeelover.uk> - 2.8.0-4
+* Thu Jul 16 2026 coffeeicus <coffeelover@coffeelover.uk> - 2.8.0-5
