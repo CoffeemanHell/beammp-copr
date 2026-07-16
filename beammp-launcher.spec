@@ -43,14 +43,15 @@ cd ..
 export VCPKG_ROOT="$(pwd)/vcpkg"
 export PATH=$VCPKG_ROOT:$PATH
 
-export CFLAGS="-O3 -march=x86-64-v3 -pipe -fexceptions -fstack-protector-strong"
-export CXXFLAGS="-O3 -march=x86-64-v3 -pipe -fexceptions -fstack-protector-strong"
+export CFLAGS="-O3 -march=x86-64-v3 -pipe -fPIC -fexceptions -fstack-protector-strong"
+export CXXFLAGS="-O3 -march=x86-64-v3 -pipe -fPIC -fexceptions -fstack-protector-strong"
 
 export VCPKG_KEEP_ENV_VARS="CFLAGS;CXXFLAGS"
 
 cmake . -B bin \
     -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake \
     -DVCPKG_TARGET_TRIPLET=x64-linux \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DCMAKE_C_FLAGS="$CFLAGS" \
     -DCMAKE_CXX_FLAGS="$CXXFLAGS"
 
@@ -94,3 +95,4 @@ EOF
 
 %changelog
 * Thu Jul 16 2026 coffeeicus <coffeelover@coffeelover.uk> - 2.8.0-5
+- Initial release.
