@@ -2,7 +2,7 @@
 
 Name:           beammp-launcher
 Version:        2.8.0
-Release:        6%{?dist}
+Release:        8%{?dist}
 Summary:        Multiplayer Launcher/Client for BeamMP (BeamNG.drive)
 
 License:        AGPL-3.0-only
@@ -16,9 +16,6 @@ BuildRequires:  gcc-c++
 BuildRequires:  make
 BuildRequires:  perl
 BuildRequires:  perl-IPC-Cmd
-BuildRequires:  perl-FindBin
-BuildRequires:  perl-File-Compare
-BuildRequires:  perl-File-Copy
 BuildRequires:  pkg-config
 BuildRequires:  kernel-headers
 BuildRequires:  kernel-devel
@@ -55,7 +52,6 @@ export VCPKG_KEEP_ENV_VARS="CFLAGS;CXXFLAGS"
 cmake . -B bin \
     -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake \
     -DVCPKG_TARGET_TRIPLET=x64-linux \
-    -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DCMAKE_C_FLAGS="$CFLAGS" \
     -DCMAKE_CXX_FLAGS="$CXXFLAGS"
@@ -65,7 +61,6 @@ cmake --build bin %{?_smp_mflags}
 %install
 install -D -p -m 0755 bin/BeamMP-Launcher %{buildroot}%{_libexecdir}/%{name}/BeamMP-Launcher
 
-strip -s %{buildroot}%{_libexecdir}/%{name}/BeamMP-Launcher
 mkdir -p %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/beammp-launcher << 'EOF'
 #!/bin/bash
@@ -74,6 +69,11 @@ BEAMMP_DIR="$XDG_DATA_HOME/BeamMP-Launcher"
 
 mkdir -p "$BEAMMP_DIR"
 cd "$BEAMMP_DIR" || exit 1
+
+# Disable coredump: BeamNG.drive (a child process) triggers a known NVIDIA
+# libGLX bug during exit() that fires a false-positive __fortify_fail abort,
+# which systemd-coredump surfaces as a "BeamMP crashed" notification.
+ulimit -c 0
 
 exec %{_libexecdir}/beammp-launcher/BeamMP-Launcher "$@"
 EOF
@@ -88,7 +88,7 @@ Name=BeamMP
 Comment=Multiplayer mod for BeamNG.drive
 Exec=/usr/bin/beammp-launcher
 Icon=beammp-launcher
-Terminal=false
+Terminal=true
 Type=Application
 Categories=Game;
 StartupNotify=true
@@ -112,5 +112,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/com.beammp.launcher.d
 %doc README.md
 
 %changelog
-* Thu Jul 16 2026 coffeeicus <coffeelover@coffeelover.uk> - 2.8.0-6
+* Thu Jul 17 2026 coffeeicus <coffeelover@coffeelover.uk> - 2.8.0-8
 - Initial release.
