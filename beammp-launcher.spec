@@ -19,6 +19,7 @@ BuildRequires:  perl-IPC-Cmd
 BuildRequires:  perl-FindBin
 BuildRequires:  perl-File-Compare
 BuildRequires:  perl-File-Copy
+BuildRequires:  pkg-config
 BuildRequires:  kernel-headers
 BuildRequires:  kernel-devel
 BuildRequires:  git
@@ -27,11 +28,13 @@ BuildRequires:  zip
 BuildRequires:  unzip
 BuildRequires:  tar
 BuildRequires:  desktop-file-utils
+BuildRequires:  ImageMagick
 
 %global debug_package %{nil}
 
 %description
-BeamMP Launcher
+%{summary}
+Native Linux launcher for BeamMP, the multiplayer mod for BeamNG.drive.
 
 %prep
 %autosetup -n BeamMP-Launcher-%{version}
@@ -45,13 +48,14 @@ cd ..
 export VCPKG_ROOT="$(pwd)/vcpkg"
 export PATH=$VCPKG_ROOT:$PATH
 
-export CFLAGS="-O3 -march=x86-64-v3 -pipe -fPIC -fexceptions -fstack-protector-strong"
-export CXXFLAGS="-O3 -march=x86-64-v3 -pipe -fPIC -fexceptions -fstack-protector-strong"
+export CFLAGS="%{optflags} -march=x86-64-v3 -fPIC"
+export CXXFLAGS="%{optflags} -march=x86-64-v3 -fPIC"
 export VCPKG_KEEP_ENV_VARS="CFLAGS;CXXFLAGS"
 
 cmake . -B bin \
     -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake \
     -DVCPKG_TARGET_TRIPLET=x64-linux \
+    -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DCMAKE_C_FLAGS="$CFLAGS" \
     -DCMAKE_CXX_FLAGS="$CXXFLAGS"
@@ -61,6 +65,7 @@ cmake --build bin %{?_smp_mflags}
 %install
 install -D -p -m 0755 bin/BeamMP-Launcher %{buildroot}%{_libexecdir}/%{name}/BeamMP-Launcher
 
+strip -s %{buildroot}%{_libexecdir}/%{name}/BeamMP-Launcher
 mkdir -p %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/beammp-launcher << 'EOF'
 #!/bin/bash
@@ -78,16 +83,21 @@ chmod 0755 %{buildroot}%{_bindir}/beammp-launcher
 mkdir -p %{buildroot}%{_datadir}/applications/
 cat > %{buildroot}%{_datadir}/applications/com.beammp.launcher.desktop << 'EOF'
 [Desktop Entry]
+Version=1.0
 Name=BeamMP
 Comment=Multiplayer mod for BeamNG.drive
-Exec=beammp-launcher
+Exec=/usr/bin/beammp-launcher
 Icon=beammp-launcher
 Terminal=false
 Type=Application
 Categories=Game;
+StartupNotify=true
+StartupWMClass=BeamMP-Launcher
 EOF
 
-install -D -p -m 0644 %{SOURCE1} %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/beammp-launcher.png
+mkdir -p %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/
+convert %{SOURCE1} -resize 512x512 -strip \
+    %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/beammp-launcher.png
 
 %check
 desktop-file-validate %{buildroot}%{_datadir}/applications/com.beammp.launcher.desktop
