@@ -103,13 +103,13 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/com.beammp.launcher.d
 
 %files
 %dir %{_libexecdir}/%{name}
-%attr(0755, root, root) %{_libexecdir}/%{name}/BeamMP-Launcher
-%attr(0755, root, root) %{_bindir}/beammp-launcher
+%{_libexecdir}/%{name}/BeamMP-Launcher
+%{_bindir}/beammp-launcher
 %{_datadir}/applications/com.beammp.launcher.desktop
 %{_datadir}/icons/hicolor/512x512/apps/beammp-launcher.png
 %license LICENSE
 %doc README.md
 
 %changelog
-* Thu Jul 18 2026 coffeeicus <coffeelover@coffeelover.uk> - 2.8.0-9
+* Sat Jul 18 2026 coffeeicus <coffeelover@coffeelover.uk> - 2.8.0-9
 - Initial release.
