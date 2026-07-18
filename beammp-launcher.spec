@@ -2,7 +2,7 @@
 
 Name:           beammp-launcher
 Version:        2.8.0
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Multiplayer Launcher/Client for BeamMP (BeamNG.drive)
 
 License:        AGPL-3.0-only
@@ -27,8 +27,6 @@ BuildRequires:  tar
 BuildRequires:  desktop-file-utils
 BuildRequires:  ImageMagick
 
-%global debug_package %{nil}
-
 %description
 %{summary}
 Native Linux launcher for BeamMP, the multiplayer mod for BeamNG.drive.
@@ -36,6 +34,7 @@ Native Linux launcher for BeamMP, the multiplayer mod for BeamNG.drive.
 %prep
 %autosetup -n BeamMP-Launcher-%{version}
 
+sed -i 's/\r$//' README.md
 git clone https://github.com/microsoft/vcpkg.git vcpkg
 cd vcpkg
 ./bootstrap-vcpkg.sh -disableMetrics
@@ -112,5 +111,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/com.beammp.launcher.d
 %doc README.md
 
 %changelog
-* Thu Jul 17 2026 coffeeicus <coffeelover@coffeelover.uk> - 2.8.0-8
+* Thu Jul 18 2026 coffeeicus <coffeelover@coffeelover.uk> - 2.8.0-9
 - Initial release.
