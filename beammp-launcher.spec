@@ -2,7 +2,7 @@
 
 Name:           beammp-launcher
 Version:        2.8.0
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Multiplayer Launcher/Client for BeamMP (BeamNG.drive)
 
 License:        AGPL-3.0-only
@@ -25,7 +25,11 @@ BuildRequires:  zip
 BuildRequires:  unzip
 BuildRequires:  tar
 BuildRequires:  desktop-file-utils
+BuildRequires:  desktop-file-utils
 BuildRequires:  ImageMagick
+
+Requires:       hicolor-icon-theme
+Requires:       bash
 
 %description
 %{summary}
@@ -111,5 +115,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/com.beammp.launcher.d
 %doc README.md
 
 %changelog
-* Sat Jul 18 2026 coffeeicus <coffeelover@coffeelover.uk> - 2.8.0-9
+* Sat Jul 18 2026 coffeeicus <coffeelover@coffeelover.uk> - 2.8.0-10
 - Initial release.
