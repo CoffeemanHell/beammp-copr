@@ -1,4 +1,4 @@
-# *beammp-copr* <a href="https://copr.fedorainfracloud.org/coprs/coffeeicus/beammp-copr/package/beammp-launcher/"><img align='right' src="https://copr.fedorainfracloud.org/coprs/coffeeicus/beammp-copr/package/beammp-launcher/status_image/last_build.png" /></a>
+# *Beammp-copr* <a href="https://copr.fedorainfracloud.org/coprs/coffeeicus/beammp-copr/package/beammp-launcher/"><img align='right' src="https://copr.fedorainfracloud.org/coprs/coffeeicus/beammp-copr/package/beammp-launcher/status_image/last_build.png" /></a>
 
 Fedora COPR packaging for [beammp-launcher](https://github.com/BeamMP/BeamMP-Launcher)
 
