@@ -2,7 +2,7 @@
 
 Name:           beammp-launcher
 Version:        2.8.0
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Multiplayer Launcher/Client for BeamMP (BeamNG.drive)
 
 License:        AGPL-3.0-only
