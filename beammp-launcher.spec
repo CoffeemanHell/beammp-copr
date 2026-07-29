@@ -2,7 +2,7 @@
 
 Name:           beammp-launcher
 Version:        2.8.0
-Release:        13%{?dist}
+Release:        14%{?dist}
 Summary:        Multiplayer Launcher/Client for BeamMP (BeamNG.drive)
 
 License:        AGPL-3.0-only
@@ -54,12 +54,6 @@ mkdir -p "$BEAMMP_DIR/logs"
 cd "$BEAMMP_DIR" || exit 1
 
 ulimit -c 0
-
-if [ -z "$SDL_VIDEODRIVER" ]; then
-    if [ "$XDG_SESSION_TYPE" = "wayland" ] || [ -n "$WAYLAND_DISPLAY" ]; then
-        export SDL_VIDEODRIVER=wayland
-    fi
-fi
 
 exec %{_libexecdir}/beammp-launcher/BeamMP-Launcher --no-update "$@"
 EOF
@@ -118,5 +112,5 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/com.beammp.lau
 %{_datadir}/icons/hicolor/512x512/apps/beammp-launcher.png
 
 %changelog
-* Sat Jul 18 2026 coffeeicus <coffeelover@coffeelover.uk> - 2.8.0-13
+* Sat Jul 18 2026 coffeeicus <coffeelover@coffeelover.uk> - 2.8.0-14
 - Switch to native system libraries instead of bundled vcpkg.
