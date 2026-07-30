@@ -8,7 +8,7 @@ Summary:        Multiplayer Launcher/Client for BeamMP (BeamNG.drive)
 License:        AGPL-3.0-only
 URL:            https://github.com/BeamMP/BeamMP-Launcher
 Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz
-Source1:        https://raw.githubusercontent.com/BeamMP/Wiki/main/logo-white.png
+Source1:        https://raw.githubusercontent.com/CoffeemanHell/beammp-copr/main/logo-white.png
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
